@@ -5,23 +5,32 @@ import SearchBar from "@/components/SearchBar";
 import Stats from "@/components/Stats";
 import SearchResultCards from "@/components/SearchResultCards";
 import RandomCocktailResultCards from "@/components/RandomCocktailResultCards";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import Loading from "@/components/Loading";
 
 export default function Home() {
-  const [cocktailName, setCocktailName] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const handleSearch = (keyword: string) => {
+    setSearchKeyword(keyword);
+  };
 
   return (
     <VStack>
       <SearchBar
-        cocktailName={cocktailName}
-        setCocktailName={setCocktailName}
+        value={searchName}
+        onChange={setSearchName}
+        onSearch={handleSearch}
       />
       <Stats />
-      {cocktailName === "" ? (
-        <RandomCocktailResultCards />
-      ) : (
-        <SearchResultCards cocktailName={cocktailName} />
-      )}
+      <Suspense fallback={<Loading />}>
+        {searchKeyword === "" ? (
+          <RandomCocktailResultCards />
+        ) : (
+          <SearchResultCards keyword={searchKeyword} />
+        )}
+      </Suspense>
     </VStack>
   );
 }

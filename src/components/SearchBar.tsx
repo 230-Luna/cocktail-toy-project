@@ -2,17 +2,26 @@
 import { Input } from "@chakra-ui/react";
 
 export default function SearchBar({
-  cocktailName,
-  setCocktailName,
+  value,
+  onChange,
+  onSearch,
 }: {
-  cocktailName: string;
-  setCocktailName: (value: string) => void;
+  value: string;
+  onChange: (value: string) => void;
+  onSearch: (searchKeyword: string) => void;
 }) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && value.trimEnd() !== "") {
+      onSearch(value.trim());
+    }
+  };
+
   return (
     <Input
       placeholder="Search for a Cocktail"
-      value={cocktailName}
-      onChange={(e) => setCocktailName(e.target.value)}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      onKeyDown={handleKeyDown}
       width="40%"
       margin="1%"
     />
